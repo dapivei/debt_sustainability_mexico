@@ -1,0 +1,162 @@
+---
+title: "Gráficas asociadas al trabajo"
+date: "12/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+ipak <- function(pkg){
+new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+if (length(new.pkg)) 
+    install.packages(new.pkg, dependencies = TRUE)
+sapply(pkg, require, character.only = TRUE)
+}
+
+# usage
+packages <- c("ggplot2", "ggrepel", "tidyr", 
+              "dplyr", 'openxlsx',
+              'hrbrthemes', 'plotly', 
+              'reshape')
+
+ipak(packages)
+
+opts_chunk$set(fig.width=6, fig.height=4,
+               echo=FALSE, warning=FALSE, message=FALSE, 
+               fig.align = 'center',
+               paged.print=TRUE)
+
+```
+
+
+```{r}
+
+df<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+          sheet = 7)
+```
+
+
+
+```{r}
+colnames(df)
+colnames(df)[1] = "country"
+colnames(df)[2] = "gdp"
+colnames(df)[3] = "debt"
+colnames(df)[4] = "te"
+colnames(df)[6] = "rating"
+colnames(df)[7] = "class"
+colnames(df)
+
+```
+
+
+```{r Fig2, echo=TRUE, fig.height=8, fig.width=20}
+g<- ggplot(df, aes(gdp
+, debt, label=country
+))
+g + geom_point() + geom_text_repel(size=9) + facet_grid(. ~ class)+
+  theme_bw(base_size = 20) +
+  theme(axis.text.x=element_text(angle=80,hjust=1))+
+  labs(title='Deuda, PIB y Ratings S&P en 2020', x='PIB per cápita a precios corrientes (Dólares per Cápita)', y= 'Deuda Pública (Porcentaje del PIB)')
+```
+
+
+
+
+```{r Fig1, echo=TRUE, fig.height=8, fig.width=20}
+
+df$rating_order = factor(df$rating, levels=c('AAA','AA+', 'AA', 'A+', 'A-','BBB', 'BBB-','BB-', 'B+','CCC+'))
+g<- ggplot(df, aes(gdp
+, debt, label=country
+))
+g + geom_point() +geom_text_repel(size=5) + facet_grid(. ~ rating_order)+
+  theme_bw(base_size = 20) +
+  theme(axis.text.x=element_text(angle=80,hjust=1)) +
+  labs(title='Deuda, PIB y Ratings S&P en 2020', x='PIB per cápita a precios corrientes (Dólares per Cápita)', y= 'Deuda Pública (Porcentaje del PIB)')
+
+```
+
+## Including Plots
+
+```{r pressure, echo=FALSE}
+het<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+          sheet = 8)
+het_melt<-melt(het)
+```
+
+
+```{r}
+het_melt
+colnames(het_melt)[1] = "gdp"
+colnames(het_melt)[3] = "Valor"
+colnames(het_melt)
+```
+
+
+
+```{r Fig1, echo=TRUE, fig.height=8, fig.width=20}
+ggp <- ggplot(het_melt, aes(variable, gdp)) +                           # Create heatmap with ggplot2
+  geom_tile(aes(fill = Valor))+
+  scale_fill_gradient(low = "#C6DBEF", high = "#08306B") +
+    theme_minimal(base_size = 30) +
+  theme(axis.text.x=element_text(angle=80,hjust=1)) +
+  labs(title='Deuda Pública como Porcentaje del PIB', x='Tiempo', y= '')
+
+```
+
+
+
+
+```{r}
+mexico_data<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+          sheet = 1
+          )
+```
+
+
+
+```{r}
+colnames(mexico_data)[1] = "gdp"
+colnames(mexico_data)[3] = "Valor"
+mexico_data=filter(mexico_data,gdp=='Mexico')
+```
+
+
+
+
+```{r}
+mexico_data=mexico_data[,c('gdp','2000', '2001','2002', '2003','2004','2005', '2006', '2007', '2008', '2009', '2010', '2011',
+                '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022', '2023',
+                '2024', '2025')]
+```
+
+
+
+```{r}
+x = colnames(mexico_data[,-1])
+t2 <- melt(mexico_data,id.vars = "gdp",measure.vars = x , variable.name="date", value.name="value",na.rm = TRUE)
+t2 = t2[order(mexico_data$id),]
+```
+
+```{r}
+t2$id <- seq(26)
+t2$value <- as.numeric(t2$value)
+```
+
+
+
+
+```{r Fig1, echo=TRUE, fig.height=8, fig.width=20}
+
+# plot
+t2 %>% 
+  ggplot(aes(x=date, y=value, group = 1)) +
+        geom_area(fill="#C6DBEF", alpha=0.8) +
+    geom_line(color="#08306B") +
+      theme_minimal(base_size = 30)+
+  annotate(geom="point", x=20, y=53.7, size=19, shape=13, fill="#08306B", color = "#08306B")+
+   theme(axis.text.x=element_text(angle=80,hjust=1))+
+    labs(title='Deuda Pública como Porcentaje del PIB en México', x='Fecha', y= 'Deuda Pública (Porcentaje del PIB)')
+```
+
