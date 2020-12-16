@@ -32,7 +32,9 @@ opts_chunk$set(fig.width=6, fig.height=4,
 
 ```{r}
 
-df<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+
+# Change path
+df<-read.xlsx('Scatterplot.xlsx',
           sheet = 7)
 ```
 
@@ -80,7 +82,8 @@ g + geom_point() +geom_text_repel(size=5) + facet_grid(. ~ rating_order)+
 ## Including Plots
 
 ```{r pressure, echo=FALSE}
-het<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+# Change path
+het<-read.xlsx('Scatterplot.xlsx',
           sheet = 8)
 het_melt<-melt(het)
 ```
@@ -109,7 +112,8 @@ ggp <- ggplot(het_melt, aes(variable, gdp)) +                           # Create
 
 
 ```{r}
-mexico_data<-read.xlsx('/Users/danielapintoveizaga/INSTITUTO TECNOLOGICO AUTONOMO DE MEXICO/FIDEL GONZALEZ PARRA - Trabajo Macro/Scatterplot.xlsx',
+# Change path
+mexico_data<-read.xlsx('Scatterplot.xlsx',
           sheet = 1
           )
 ```
