@@ -5,6 +5,6 @@
 
 Trabajo elaborado por:
 
-> Fidel González Parra
-> Daniela Pinto Veizaga
++ Fidel González Parra
++ Daniela Pinto Veizaga
 
